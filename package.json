@@ -1,6 +1,6 @@
 {
   "name": "form",
-  "homepage": "https://arseniyepti.github.io",
+  "homepage": "https://arseniyepti.github.io/formik/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -35,7 +35,9 @@
     "eslint:fix": "eslint  src/**/*.{js,jsx} --fix",
     "eslint:fix:layout": "eslint  src/**/*.{js,jsx} --fix --fix-type layout",
     "lint": "npm run eslint -s & npm run stylelint -s",
-    "lint:fix": "npm run eslint:fix -s & npm run stylelint:fix -s"
+    "lint:fix": "npm run eslint:fix -s & npm run stylelint:fix -s",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -101,6 +103,8 @@
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.19.0",
     "eslint-plugin-react-hooks": "^2.5.0",
+    "gh-pages": "^2.2.0",
+    "github-pages": "^3.0.2",
     "husky": "^4.2.5",
     "lint-staged": "^10.1.6",
     "prettier": "2.0.4",
