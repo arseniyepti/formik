@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Formik, Field } from 'formik';
-import axios from 'axios';
 import _uniqueId from 'lodash/uniqueId';
 import { Input } from 'antd';
+import instance from '../helpers/instance';
 import {
   StyledForm,
   Label,
@@ -83,18 +83,14 @@ export default class Forms extends Component {
           this.setState({
             loading: true,
           });
-          const request = axios.create('/sign-up', {
-            baseURL: 'http://localhost:3001',
-            method: 'post',
-            data: {
-              name: values.name,
-              password: values.password,
-              repeatPassword: values.repeatPassword,
-              email: values.email,
-              website: values.website,
-              age: values.age,
-              skills: skills.map((el) => el.skill),
-            },
+          const request = await instance.post('/sign-up', {
+            name: values.name,
+            password: values.password,
+            repeatPassword: values.repeatPassword,
+            email: values.email,
+            website: values.website,
+            age: values.age,
+            skills: skills.map((el) => el.skill),
           });
           if (request.statusText === 'OK') {
             this.setState({
@@ -102,7 +98,6 @@ export default class Forms extends Component {
               response: request.data,
             });
           }
-          console.log(request);
           if (request.data === 'successfully') {
             this.clearArrSkills();
             resetForm();

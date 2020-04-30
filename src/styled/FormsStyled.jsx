@@ -1,5 +1,6 @@
-import styled from 'styled-components';
 import { Button } from 'antd';
+import 'antd/dist/antd.css';
+import styled from 'styled-components';
 
 export const SkillsWrap = styled.div`
   display: flex;
@@ -16,33 +17,18 @@ export const SpanBtn = styled.span`
 `;
 
 export const StyledButton = styled(Button)`
-  border-radius: 2px;
-  border: 1px solid rgba(0, 26, 248, 0.75);
-  background: linear-gradient(
-    to top,
-    rgba(43, 102, 229, 0.38) 20%,
-    #e4e4d8 50%,
-    rgba(6, 80, 248, 0.75) 80%
-  );
   color: rgba(0, 36, 217, 0.88);
-  width: 140px;
-  font-size: 18px;
+  width: 120px;
   align-self: center;
-  margin-top: 20px;
+  margin-top: 10px;
   & svg {
     display: ${({ loading }) => {
-      return loading ? 'block' : 'none';
+      return loading ? 'inline-block' : 'none';
     }};
   }
 `;
 export const SkillsButton = styled(Button)`
-  border: 1px solid rgba(0, 26, 248, 0.75);
-  background: linear-gradient(
-    to top,
-    rgba(43, 102, 229, 0.38) 20%,
-    #e4e4d8 50%,
-    rgba(6, 80, 248, 0.75) 80%
-  );
+  background-color: transparent;
   color: rgba(0, 36, 217, 0.88);
   width: 100px;
   position: absolute;
@@ -65,17 +51,22 @@ export const Label = styled.label`
   color: rgba(4, 4, 4, 0.47);
   font-size: 14px;
 
-  &:last-of-type {
-    margin-top: 40px;
-  }
-
   & input {
+    width: 180px;
     font-family: 'Times New Roman', sans-serif;
     font-size: 14px;
   }
 
-  &:last-child input {
-    margin-left: 50px;
+  &:last-of-type {
+    margin-top: 40px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  &:last-of-type > input {
+    width: 15px;
+    margin-left: 200px;
   }
 `;
 
