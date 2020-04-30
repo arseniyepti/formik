@@ -23,7 +23,7 @@
     "yup": "^0.28.4"
   },
   "scripts": {
-    "server": "nodemon --inspect src/server/server.js",
+    "server": "nodemon --inspect -r esm src/server/server.js",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

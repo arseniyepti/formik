@@ -28,11 +28,9 @@ const validationSchema = Yup.object().shape({
     .max(50, 'Не более 50 символов'),
   age: Yup.number()
     .typeError('Неверный формат введенных данных')
-    .max(50, 'Не более 50 символов')
+    .min(18, 'Повзрослейте пожалуйста')
+    .max(65, 'Помолодейте пожалуйста')
     .required('Поле не заполнено'),
-  skills: Yup.string()
-    .typeError('Неверный формат введенных данных')
-    .max(50, 'Не более 50 символов'),
   acceptTerms: Yup.boolean().oneOf([true], 'Необходимо принять соглашение'),
 });
 

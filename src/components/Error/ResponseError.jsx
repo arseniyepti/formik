@@ -4,12 +4,16 @@ import ErrorMessage from '../../styled/ErrorStyled';
 
 const ResponseError = ({ response }) => {
   if (response === 'successfully') {
-    return <ErrorMessage validate>Email успешно зарегестрирован</ErrorMessage>;
+    return (
+      <ErrorMessage position validate>
+        Email успешно зарегестрирован
+      </ErrorMessage>
+    );
   }
   if (response === 'not successful') {
-    return <ErrorMessage>Email уже существует</ErrorMessage>;
+    return <ErrorMessage position>Email уже существует</ErrorMessage>;
   }
-  return null;
+  return <ErrorMessage position>&nbsp;</ErrorMessage>;
 };
 
 ResponseError.propTypes = {

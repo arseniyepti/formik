@@ -2,14 +2,16 @@ import React, { Component } from 'react';
 import { Formik, Field } from 'formik';
 import axios from 'axios';
 import _uniqueId from 'lodash/uniqueId';
+import { Input } from 'antd';
 import {
-  StyledInput,
   StyledForm,
   Label,
   Wrap,
   StyledButton,
   SkillsButton,
   SkillsWrap,
+  SpanBtn,
+  SymSpan,
 } from '../../styled/FormsStyled';
 import Error from '../Error/Error';
 import ResponseError from '../Error/ResponseError';
@@ -19,6 +21,7 @@ export default class Forms extends Component {
   state = {
     skills: [],
     response: '',
+    loading: false,
   };
 
   addSkills = (skill, setFieldValue) => () => {
@@ -32,31 +35,37 @@ export default class Forms extends Component {
     setFieldValue('skills', '');
   };
 
+  addSkillsEnter = (skill, setFieldValue) => (event) => {
+    if (event.key === 'Enter') {
+      this.addSkills(skill, setFieldValue)();
+    }
+  };
+
   clearArrSkills = () => {
     this.setState({
       skills: [],
     });
   };
 
-  renderSkills = (setFieldTouched, handleChange) => {
+  renderSkills = (values) => {
     const { skills } = this.state;
     return skills.map(({ skill, id }) => {
       return (
         <Field
           key={id}
-          onChange={handleChange}
-          value={skill}
+          defaultValue={skill}
+          value={values.skills}
           name="skills"
           id="skills"
           type="text"
-          component={StyledInput}
+          component={Input}
         />
       );
     });
   };
 
   render() {
-    const { response, skills } = this.state;
+    const { response, skills, loading } = this.state;
     return (
       <Formik
         initialValues={{
@@ -70,20 +79,13 @@ export default class Forms extends Component {
           acceptTerms: '',
         }}
         validationSchema={validationSchema}
-        onSubmit={async (values, { setSubmitting }) => {
-          const request = await axios({
-            url: '/sign-up',
+        onSubmit={async (values, { resetForm }) => {
+          this.setState({
+            loading: true,
+          });
+          const request = axios.create('/sign-up', {
             baseURL: 'http://localhost:3001',
             method: 'post',
-            transformRequest: [
-              (data) => {
-                return JSON.stringify(data);
-              },
-            ],
-            headers: {
-              'Access-Control-Allow-Origin': '*',
-              'Content-Type': 'application/json',
-            },
             data: {
               name: values.name,
               password: values.password,
@@ -91,17 +93,20 @@ export default class Forms extends Component {
               email: values.email,
               website: values.website,
               age: values.age,
-              skills,
+              skills: skills.map((el) => el.skill),
             },
           });
-          this.setState({
-            response: request.data,
-          });
-          setSubmitting(true);
-          setTimeout(() => {
+          if (request.statusText === 'OK') {
+            this.setState({
+              loading: false,
+              response: request.data,
+            });
+          }
+          console.log(request);
+          if (request.data === 'successfully') {
             this.clearArrSkills();
-            setSubmitting(false);
-          }, 500);
+            resetForm();
+          }
         }}
       >
         {({
@@ -117,7 +122,7 @@ export default class Forms extends Component {
           <Wrap>
             <StyledForm onSubmit={handleSubmit}>
               <Label>
-                Имя*:
+                Имя<SymSpan>*</SymSpan>
                 <Field
                   onChange={(event) => {
                     setFieldTouched('name');
@@ -127,12 +132,12 @@ export default class Forms extends Component {
                   name="name"
                   id="name"
                   type="text"
-                  component={StyledInput}
+                  component={Input}
                 />
               </Label>
               <Error touched={touched.name} message={errors.name} />
               <Label>
-                Пароль*:
+                Пароль<SymSpan>*</SymSpan>
                 <Field
                   onChange={(event) => {
                     setFieldTouched('password');
@@ -142,12 +147,12 @@ export default class Forms extends Component {
                   name="password"
                   id="password"
                   type="password"
-                  component={StyledInput}
+                  component={Input}
                 />
               </Label>
               <Error touched={touched.password} message={errors.password} />
               <Label>
-                Подтвердение пароля*:
+                Подтверждение пароля<SymSpan>*</SymSpan>
                 <Field
                   onChange={(event) => {
                     setFieldTouched('repeatPassword');
@@ -157,12 +162,12 @@ export default class Forms extends Component {
                   name="repeatPassword"
                   id="repeatPassword"
                   type="password"
-                  component={StyledInput}
+                  component={Input}
                 />
               </Label>
               <Error touched={touched.repeatPassword} message={errors.repeatPassword} />
               <Label>
-                Email*:
+                Email<SymSpan>*</SymSpan>
                 <Field
                   onChange={(event) => {
                     setFieldTouched('email');
@@ -172,13 +177,12 @@ export default class Forms extends Component {
                   name="email"
                   id="email"
                   type="email"
-                  component={StyledInput}
+                  component={Input}
                 />
               </Label>
               <Error response touched={touched.email} message={errors.email} />
-              <ResponseError response={response} />
               <Label>
-                Сайт:
+                Сайт
                 <Field
                   onChange={(event) => {
                     setFieldTouched('website');
@@ -188,12 +192,12 @@ export default class Forms extends Component {
                   name="website"
                   id="website"
                   type="text"
-                  component={StyledInput}
+                  component={Input}
                 />
               </Label>
               <Error touched={touched.website} message={errors.website} />
               <Label>
-                Возраст*:
+                Возраст<SymSpan>*</SymSpan>
                 <Field
                   onChange={(event) => {
                     setFieldTouched('age');
@@ -203,41 +207,48 @@ export default class Forms extends Component {
                   name="age"
                   id="age"
                   type="text"
-                  component={StyledInput}
+                  component={Input}
                 />
               </Label>
               <Error touched={touched.age} message={errors.age} />
               <Label>
-                Навыки:
+                Навыки
                 <SkillsWrap>
                   <Field
                     onChange={handleChange}
+                    onKeyDown={this.addSkillsEnter(values.skills, setFieldValue)}
                     value={values.skills}
                     name="skills"
                     id="skills"
                     type="text"
-                    component={StyledInput}
+                    component={Input}
                   />
-                  {this.renderSkills(setFieldTouched, handleChange)}
+                  {this.renderSkills(values.skills)}
                 </SkillsWrap>
                 <SkillsButton onClick={this.addSkills(values.skills, setFieldValue)}>
                   Добавить
                 </SkillsButton>
               </Label>
               <Label>
-                Принимаю условия:
+                Принимаю условия
                 <Field
                   name="acceptTerms"
                   onChange={handleChange}
                   id="acceptTerms"
                   defaultChecked
                   type="checkbox"
-                  component={StyledInput}
+                  component={Input}
                 />
               </Label>
-              <Error touched="acceptTerms" message={errors.acceptTerms} />
-              <StyledButton disabled={isSubmitting} htmlType="submit">
-                Отправить
+              <Error touched message={errors.acceptTerms} />
+              <ResponseError response={response} />
+              <StyledButton
+                type="ghost"
+                loading={loading}
+                disabled={isSubmitting}
+                htmlType="submit"
+              >
+                <SpanBtn>Отправить</SpanBtn>
               </StyledButton>
             </StyledForm>
           </Wrap>

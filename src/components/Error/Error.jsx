@@ -9,12 +9,17 @@ const Error = ({ touched, message }) => {
   if (message && touched) {
     return <ErrorMessage>{message}</ErrorMessage>;
   }
-  return <ErrorMessage validate>{touched === 'acceptTerms' ? '' : 'Заполнено верно'}</ErrorMessage>;
+  return <ErrorMessage validate>{touched ? <span>&nbsp;</span> : 'Заполнено верно'}</ErrorMessage>;
+};
+
+Error.defaultProps = {
+  touched: false,
+  message: undefined,
 };
 
 Error.propTypes = {
-  touched: PropTypes.string.isRequired,
-  message: PropTypes.string.isRequired,
+  touched: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  message: PropTypes.string,
 };
 
 export default Error;
